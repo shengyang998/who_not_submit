@@ -10,11 +10,11 @@ python main.py
 You can set up the names:
 1. at line 46 in `main.py`, which is commented with `MARK:`
 2. at file `name_set_with_blank_to_separate` with blank
-
-> If you want a executable binary, which is not recommended, get gcc installed and set up environment variable of `$C_INCLUDE_PATH` and `$PYTHON_LIB` and then run `./build.sh`. 
+> If you leave the `name_set_with_blank_to_separate` file existed, students' names in `main.py` will be covered by names in file even though the file is empty. If you want to use names in `main.py`, you could just delete the file `name_set_with_blank_to_separate` or change its name. After that when you run the script, there will be a `WARNING` appeared in you terminal. So my suggestion is to always use names in file, which is a more flexible way. 
 
 # Notice
 The file `name_set_with_blank_to_separate` must be encoded by UTF8
+> If you want a executable binary, which is not recommended, get gcc installed and set up environment variable of `$C_INCLUDE_PATH` and `$PYTHON_LIB` and then run `./build.sh`. 
 
 # Known bugs
 1. Cannot follow soft link
