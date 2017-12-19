@@ -7,7 +7,7 @@ Then run on terminal like:
 ```shell
 python main.py
 ```
-You can set up the names:
+You can set up the names in two ways:
 1. at line 46 in `main.py`, which is commented with `MARK:`
 2. at file `name_set_with_blank_to_separate` with blank
 > If you leave the `name_set_with_blank_to_separate` file existed, students' names in `main.py` will be covered by names in file even though the file is empty. If you want to use names in `main.py`, you could just delete the file `name_set_with_blank_to_separate` or change its name. After that when you run the script, there will be a `WARNING` appeared in you terminal. So my suggestion is to always use names in file, which is a more flexible way. 
