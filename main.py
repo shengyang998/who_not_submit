@@ -4,7 +4,7 @@ import os
 import time as time
 
 
-def getFileNames(path):
+def get_file_names(path):
     """
     get files name from the path and return a list of names or [] if path is empty or Error occered
     """
@@ -12,7 +12,7 @@ def getFileNames(path):
     return file_name_list
 
 
-def getTheStuNames(stu_names, file_names):
+def get_the_student_names(stu_names, file_names):
     """
     get the student names who didn't submit the homework
     return a set of student names or a set() if all submitted
@@ -32,16 +32,49 @@ def getTheStuNames(stu_names, file_names):
     return res, duplicated_set
 
 
+def print_result(result, duplicated, max_length):
+    """
+    print the result of whom not submit the homework
+    :param result: a set including the names who didn't submit the homework, can be None
+    :param duplicated: a set including the names who didn't submit the homework and who is duplicated, can be None
+    :return: None
+    """
+    if isinstance(result, set):
+        result = list(result)
+    if isinstance(duplicated, set):
+        duplicated = list(duplicated)
+    title_bar = '============================='
+    if 0 == len(result):
+        print("作业已收齐。")
+    elif max_length == len(result):
+        print("没有找到任何人的作业，请检查文件路径是否正确。")
+    else:
+        print("{0} 未交作业：{1:>2} {0}".format(title_bar, len(result)))
+        t = 0
+        for index in range(len(result)):
+            print(result[index], end=' ')
+            t += 2*len(result[index])+1
+            if ((len(title_bar)*2)+len(' 未交作业：00 ')) - (t % ((len(title_bar)*2)+len(' 未交作业：00 '))) < 7:
+                print('\n', end='')
+        print()
+    if 0 < len(duplicated):
+        print("{0} 发现重复提交 {0}".format(title_bar))
+        for i in duplicated:
+            print(i, end=' ')
+        print()
+    print("========================================================================", end='\n\n')
+
+
 if __name__ == "__main__":
-    name_set_file_name = "name_set_with_blank_to_separate"
+    name_set_file_name = "name_set"
     try:
-        print("Loading {0}...".format(name_set_file_name), end='\n')
+        print("正在读取 {0}...".format(name_set_file_name), end='\n')
         with open(name_set_file_name, mode='r', encoding='utf-8') as f:
             s = ' '.join(f.readlines()).split(' ')
             full_name_set = set(s)
-            print("Name set is loaded.")
+            print("{0} 读取成功".format(name_set_file_name))
     except FileNotFoundError:
-        print("WARNING: \"{0}\" file not found, using default hard-code name set.".format(name_set_file_name), end='\n\n')
+        print("警告: 未找到 \"{0}\" 文件，将使用硬编码的名字集合...".format(name_set_file_name), end='\n\n')
         full_name_set = set([
             # MARK: Here to insert your names
         ])
@@ -51,27 +84,12 @@ if __name__ == "__main__":
         path = path.strip()
         t = time.time()
         try:
-            file_names = getFileNames(path)
-            result, duplicated = getTheStuNames(full_name_set, file_names)
-            if 0 == len(result):
-                print("作业已收齐。")
-            elif len(full_name_set) == len(result):
-                print("没有找到任何人的作业，请检查文件路径是否正确。")
-            else:
-                print("============================= 未交作业：{0:>2} =============================".format(len(result)))
-                for i in result:
-                    print(i, end=' ')
-                print()
-            if 0 < len(duplicated):
-                print("============================= 发现重复提交 =============================")
-                for i in duplicated:
-                    print(i, end=' ')
-                print()
-            print("========================================================================")
+            file_names = get_file_names(path)
+            result, duplicated = get_the_student_names(full_name_set, file_names)
         except FileNotFoundError as e:
-            print("Error: {0}".format(e))
+            print("错误：找不到文件或目录：{0}".format(e.filename), end='\n\n')
+            continue
         except NotADirectoryError as e:
-            print("Error: {0}".format(e))
-            print("WARNING: This is not a directory, please input a directory rather than a shortcut link or something...")
-        print("Exec time is %5.3f ms" % (1000 * (time.time() - t)))
-        print()
+            print("错误：这不是一个目录：{0}".format(e.strerror), end='\n\n')
+            continue
+        print_result(result, duplicated, len(full_name_set))

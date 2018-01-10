@@ -8,17 +8,20 @@ Then run on terminal like:
 python main.py
 ```
 You can set up the names in two ways:
-1. at line 46 in `main.py`, which is commented with `MARK:`
-2. at file `name_set_with_blank_to_separate` with blank
-> If you leave the `name_set_with_blank_to_separate` file existed, students' names in `main.py` will be covered by names in file even though the file is empty. If you want to use names in `main.py`, you could just delete the file `name_set_with_blank_to_separate` or change its name. After that when you run the script, there will be a `WARNING` appeared in you terminal. So my suggestion is to always use names in file, which is a more flexible way. 
+1. Add the names at file `name_set` with blank to separate
+2. Add the names with ',' to separate at line 79 in `main.py`, which is commented with `MARK: `
+
+> If the `name_set` file existed, even though the file is empty, the students' names hard coded in `main.py` will be covered by names in file.
+If you want to use names in `main.py`, you could just delete the file `name_set`.
+However, after that when you run the script, there will be a `WARNING` appeared in you terminal.
+So my suggestion is to always use names in file, which is a more flexible way.
 
 # Notice
-The file `name_set_with_blank_to_separate` must be encoded by UTF8
-> If you want a executable binary, which is not recommended, get gcc installed and set up environment variable of `$C_INCLUDE_PATH` and `$PYTHON_LIB` and then run `./build.sh`. 
+The file `name_set` should be encoded by UTF8
 
 # Known bugs
 1. Cannot follow soft link
-2. Sometimes it will raise `NotADirectoryError` after I change to python3.6 on macOS. (The script is written on python3.4)
+2. If there is blank in you path or dir name, the program will raise a 'NotADirectoryError'. So make sure that there is no blank in you path.
 
 Because this script is currently for personal use, there must be a number of bugs in it, so feel free to submit issues. 
 
