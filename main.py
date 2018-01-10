@@ -65,7 +65,7 @@ def print_result(result, duplicated, max_length):
 
 
 if __name__ == "__main__":
-    name_set_file_name = "name_set"
+    name_set_file_name = "./name_set"
     try:
         print("正在读取 {0}...".format(name_set_file_name), end='\n')
         with open(name_set_file_name, mode='r', encoding='utf-8') as f:
