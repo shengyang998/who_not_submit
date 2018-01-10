@@ -1,7 +1,6 @@
 from __future__ import print_function
 import re
 import os
-import time as time
 
 
 def get_file_names(path):
@@ -82,7 +81,6 @@ if __name__ == "__main__":
         path = input("请输入作业文件夹的路径：")
         print()
         path = path.strip()
-        t = time.time()
         try:
             file_names = get_file_names(path)
             result, duplicated = get_the_student_names(full_name_set, file_names)
