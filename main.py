@@ -1,6 +1,7 @@
 from __future__ import print_function
 import re
 import os
+import sys
 
 
 def get_file_names(path):
@@ -15,7 +16,8 @@ def get_the_student_names(stu_names, file_names):
     """
     get the student names who didn't submit the homework
     return a set of student names or a set() if all submitted
-    return a set of duplicated handed names
+    return a set of duplicated submition names
+    return a set of submitted names
     """
     submitted_set = set()
     duplicated_set = set()
@@ -28,7 +30,7 @@ def get_the_student_names(stu_names, file_names):
             submitted_set.add(i)
             duplicated_set.add(i)
     res = stu_names - submitted_set
-    return res, duplicated_set
+    return res, duplicated_set, submitted_set
 
 
 def print_result(result, duplicated, max_length):
@@ -49,12 +51,16 @@ def print_result(result, duplicated, max_length):
         print("没有找到任何人的作业，请检查文件路径是否正确。")
     else:
         print("{0} 未交作业：{1:>2} {0}".format(title_bar, len(result)))
-        t = 0
+        cur_length = 0
+        flag_to_return = 0
+        title_bar_len = ((len(title_bar) * 2) + len(' 未交作业：00 '))
         for index in range(len(result)):
             print(result[index], end=' ')
-            t += 2*len(result[index])+1
-            if ((len(title_bar)*2)+len(' 未交作业：00 ')) - (t % ((len(title_bar)*2)+len(' 未交作业：00 '))) < 7:
+            flag_to_return += 1
+            cur_length += 2 * len(result[index]) + 1
+            if title_bar_len - (cur_length % title_bar_len) < 7 and flag_to_return > 1:
                 print('\n', end='')
+                flag_to_return = 0
         print()
     if 0 < len(duplicated):
         print("{0} 发现重复提交 {0}".format(title_bar))
@@ -64,8 +70,9 @@ def print_result(result, duplicated, max_length):
     print("========================================================================", end='\n\n')
 
 
-if __name__ == "__main__":
-    name_set_file_name = "./name_set"
+def main(path=None):
+    dir_to_self = os.path.split(os.path.realpath(sys.argv[0]))[0] + '/'
+    name_set_file_name = dir_to_self + "name_set"
     try:
         print("正在读取 {0}...".format(name_set_file_name), end='\n')
         with open(name_set_file_name, mode='r', encoding='utf-8') as f:
@@ -78,12 +85,13 @@ if __name__ == "__main__":
             # MARK: Here to insert your names
         ])
     while True:
-        path = input("请输入作业文件夹的路径：")
+        if path is None:
+            path = input("请输入作业文件夹的路径：")
         print()
         path = path.strip()
         try:
             file_names = get_file_names(path)
-            result, duplicated = get_the_student_names(full_name_set, file_names)
+            result, duplicated, submitted = get_the_student_names(full_name_set, file_names)
         except FileNotFoundError as e:
             print("错误：找不到文件或目录：{0}".format(e.filename), end='\n\n')
             continue
@@ -91,3 +99,15 @@ if __name__ == "__main__":
             print("错误：这不是一个目录：{0}".format(e.strerror), end='\n\n')
             continue
         print_result(result, duplicated, len(full_name_set))
+        path = None
+
+
+if __name__ == "__main__":
+    try:
+        if len(sys.argv) > 1:
+            main(sys.argv[1])
+        else:
+            main()
+    except KeyboardInterrupt as e:
+        print("\nAccept Ctrl + C. The program will be exit. ")
+        exit()
