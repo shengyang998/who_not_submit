@@ -33,7 +33,7 @@ def get_the_student_names(stu_names, file_names):
     return res, duplicated_set, submitted_set
 
 
-def print_result(result, duplicated, max_length):
+def print_result(result, duplicated, submitted, max_length):
     """
     print the result of whom not submit the homework
     :param result: a set including the names who didn't submit the homework, can be None
@@ -44,30 +44,39 @@ def print_result(result, duplicated, max_length):
         result = list(result)
     if isinstance(duplicated, set):
         duplicated = list(duplicated)
+    if isinstance(submitted, set):
+        submitted = list(submitted)
     title_bar = '============================='
     if 0 == len(result):
         print("作业已收齐。")
     elif max_length == len(result):
         print("没有找到任何人的作业，请检查文件路径是否正确。")
     else:
-        print("{0} 未交作业：{1:>2} {0}".format(title_bar, len(result)))
-        cur_length = 0
-        flag_to_return = 0
-        title_bar_len = ((len(title_bar) * 2) + len(' 未交作业：00 '))
-        for index in range(len(result)):
-            print(result[index], end=' ')
-            flag_to_return += 1
-            cur_length += 2 * len(result[index]) + 1
-            if title_bar_len - (cur_length % title_bar_len) < 7 and flag_to_return > 1:
-                print('\n', end='')
-                flag_to_return = 0
-        print()
-    if 0 < len(duplicated):
-        print("{0} 发现重复提交 {0}".format(title_bar))
-        for i in duplicated:
-            print(i, end=' ')
-        print()
-    print("========================================================================", end='\n\n')
+        title = "{0} 未交作业：{1:>2} {0}".format(title_bar, len(result))
+        print(title)
+        print_names(result, len(title))
+        title = "{0} 已交作业：{1:>2} {0}".format(title_bar, len(submitted))
+        print(title)
+        print_names(submitted, len(title))
+        if 0 < len(duplicated):
+            title = "{0} 发现重复提交 {0}".format(title_bar)
+            print(title)
+            print_names(duplicated, len(title))
+        print('=' * (len(title) + 5), end='\n')
+    print()
+
+
+def print_names(result, title_bar_len):
+    cur_length = 0
+    flag_to_return = 0
+    for index in range(len(result)):
+        print(result[index], end=' ')
+        flag_to_return += 1
+        cur_length += 2 * len(result[index]) + 1
+        if title_bar_len - (cur_length % title_bar_len) < 5 and flag_to_return > 1:
+            print("\n", end='')
+            flag_to_return = 0
+    print("\n", end='')
 
 
 def main(path=None):
@@ -84,6 +93,9 @@ def main(path=None):
         full_name_set = set([
             # MARK: Here to insert your names
         ])
+        if len(full_name_set) == 0:
+            print("错误：名字集合为空，程序将退出。")
+            exit()
     while True:
         if path is None:
             path = input("请输入作业文件夹的路径：")
@@ -94,11 +106,13 @@ def main(path=None):
             result, duplicated, submitted = get_the_student_names(full_name_set, file_names)
         except FileNotFoundError as e:
             print("错误：找不到文件或目录：{0}".format(e.filename), end='\n\n')
+            path = None
             continue
         except NotADirectoryError as e:
             print("错误：这不是一个目录：{0}".format(e.strerror), end='\n\n')
+            path = None
             continue
-        print_result(result, duplicated, len(full_name_set))
+        print_result(result, duplicated, submitted, len(full_name_set))
         path = None
 
 
